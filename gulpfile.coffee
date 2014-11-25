@@ -10,7 +10,7 @@ gulp.task 'connect', ->
   $.connect.server
     root: "./#{config.app}"
     livereload: true
-    host: "localhost"
+    host: "192.168.1.18"
     middleware: (connect, opt) ->
       [
         connect.static '.tmp'
@@ -29,8 +29,7 @@ gulp.task 'watch', ->
         .pipe $.connect.reload()
 
 gulp.task 'wiredep', ->
-  gulp.src "./#{config.app}/index.html"
+  gulp.src "#{config.app}/index.html"
     .pipe wiredep
-      optional: 'configuration'
-      goes: 'here'
+      ignorePath: '../'
     .pipe gulp.dest "./#{config.app}"
