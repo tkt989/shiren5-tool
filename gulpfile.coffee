@@ -17,19 +17,21 @@ gulp.task 'connect', ->
         connect().use '/bower_components', connect.static './bower_components'
       ]
 
-gulp.task 'coffee', ->
-  gulp.src "./#{config.app}/scripts/*.coffee"
-    .pipe $.coffee()
-    .pipe gulp.dest '.tmp/scripts'
-
 gulp.task 'watch', ->
   gulp.watch './**/*.*'
     .on 'change', (file) ->
       gulp.src file.path
         .pipe $.connect.reload()
 
+gulp.task 'coffee', ->
+  gulp.src "./#{config.app}/scripts/*.coffee"
+    .pipe $.coffee()
+    .pipe gulp.dest '.tmp/scripts'
+
 gulp.task 'wiredep', ->
   gulp.src "#{config.app}/index.html"
     .pipe wiredep
       ignorePath: '../'
     .pipe gulp.dest "./#{config.app}"
+
+gulp.task 'serve', ['connect', 'watch']  

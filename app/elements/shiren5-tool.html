@@ -1,0 +1,60 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="shiren5-price-input.html">
+<link rel="import" href="shiren5-types-form.html">
+<link rel="import" href="shiren5-states-form.html">
+<link rel="import" href="shiren5-item-list.html">
+
+<polymer-element name="shiren5-tool">
+   <template>
+     <style>
+       :host {
+           display: block;
+           height: 100%;
+       }
+     </style>
+         
+    <core-ajax
+      id="ajax"
+      auto
+      url="../items.json"
+      handleAs="json"
+      on-core-response="{{ response }}"></core-ajax>
+    
+     <div id="content" fit vertical layout>
+       <div horizontal layout>
+         <shiren5-price-input flex one value="{{ price }}"></shiren5-price-input>
+         <shiren5-types-form flex two value="{{ types }}"></shiren5-types-form>
+         <shiren5-states-form flex two value="{{ states }}"></shiren5-states-form>
+       </div>
+       
+       <shiren5-item-list flex data="{{ list }}"></shiren5-item-list>
+     </div>
+  </template>
+
+  <script>
+    Polymer({
+        data: [],
+        list: [],
+
+        dataChanged: function () {
+            this.list = this.data.filter(function (elem) {
+                return elem.purchase == this.price;
+            }.bind(this));
+            console.log(this.list);
+        },
+        
+        response: function (event, detail, sender) {
+            this.data = detail.response;
+        },
+        
+        priceChanged: function () {
+            this.dataChanged();
+        },
+
+        filter: function () {
+            
+        }
+    });
+  </script>
+</polymer-element>

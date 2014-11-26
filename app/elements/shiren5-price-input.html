@@ -1,0 +1,26 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-input/core-input.html">
+<link rel="import" href="../bower_components/core-label/core-label.html">
+
+<polymer-element name="shiren5-price-input" attributes="value">
+  <template>
+    <style>
+      #price {
+          text-align: right;
+      }
+
+      core-label {
+          width: 100%;
+      }
+    </style>
+
+    <core-label horizontal layout>
+      <input flex id="price" is="core-input" placeholder="9999" value="{{ value }}">
+      <span>G</span>
+    </core-label>
+  </template>
+  
+  <script>
+    Polymer({});
+  </script>
+</polymer-element>

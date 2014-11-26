@@ -1,0 +1,43 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-field/core-field.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
+<polymer-element name="shiren5-types-form" attributes="value">
+  <template>
+    <style>
+    </style>
+
+    <core-field horizontal around-justified layout>
+      <template repeat="{{ type in data }}">
+        <paper-checkbox data-index="{{ type.index }}"
+                        label="{{ type.label }}"
+                        on-change="{{ check }}"></paper-checkbox>
+      </template>
+    </core-field>
+  </template>
+  
+  <script>
+    Polymer({
+        data: [
+            { index: 0, label: "草・種" },
+            { index: 1, label: "杖" },
+            { index: 2, label: "巻物" },
+            { index: 3, label: "壺" },
+            { index: 4, label: "腕輪" }
+        ],
+        value: [],
+        
+        check: function (event, detail, sender) {
+            var index = Number(sender.getAttribute("data-index"));
+            if (sender.checked) {
+                if (this.value.indexOf(index) == -1)
+                    this.value.push(index);
+            } else {
+                var idx = this.value.indexOf(index);
+                if (idx != -1)
+                    this.value.splice(idx, 1);
+            }
+        }
+    });
+  </script>
+</polymer-element>
