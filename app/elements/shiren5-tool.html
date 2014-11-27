@@ -34,27 +34,93 @@
 
   <script>
     Polymer({
-        data: [],
-        list: [],
+      data: [],
+      list: [],
+      blessed: false,
+      cursed: false,
 
-        dataChanged: function () {
-            this.list = this.data.filter(function (elem) {
-                return elem.purchase == this.price;
-            }.bind(this));
-            console.log(this.list);
-        },
+      search: function () {
+        var blessed = true;
+        var cursed = true;
         
-        response: function (event, detail, sender) {
-            this.data = detail.response;
-        },
-        
-        priceChanged: function () {
-            this.dataChanged();
-        },
+        this.list = this.data.reduce(function (prev, curr) {
+          var list = this.itemCheck(this.price, curr, "purchase",
+                               this.blessed, this.cursed);
 
-        filter: function () {
-            
+          if (list.length > 0)
+            Array.prototype.push.apply(prev, list);
+          return prev;
+        }.bind(this), []);
+
+        console.log(this.list);
+      },
+
+      itemCheck: function (price, item, prop, blessed, cursed) {
+        var result = [];
+
+        if (item.capable) {
+          for (var i = 0; i < item.max; ++i) {
+            var list = this.check(price, item, prop, blessed, cursed, i);
+            Array.prototype.push.apply(result, list);
+          }
+        } else {
+          var list = this.check(price, item, prop, blessed, cursed);
+          Array.prototype.push.apply(result, list);
         }
+        return result;
+      },
+
+      check: function (price, item, prop,
+                       blessed, cursed, capacity) {
+        if (typeof capacity === 'undefined') capacity = null;
+        var result = [];
+        var getPrice = function (value, modulo) {
+          if (capacity == null)
+            return Number(value * modulo);
+          else
+            return Number(value * (1 + 0.05 * capacity));
+        };
+
+        if (price == getPrice(item[prop], 1)) {
+          result.push(item);
+        }
+        if (blessed && price == getPrice(item[prop], 1.1)) {
+          var blessedItem = this.copy(item);
+          blessedItem.state = "blessed";
+          result.push(blessedItem);
+        }
+        if (cursed && price == getPrice(item[prop], 0.8)) {
+          var cursedItem = this.copy(item);
+          cursedItem.state = "cursed";
+          result.push(cursedItem);
+        }
+
+        return result;
+      },
+      
+      response: function (event, detail, sender) {
+        this.data = detail.response;
+      },
+      
+      copy: function (obj) {
+        return JSON.parse(JSON.stringify(obj));
+      },
+
+      group: function (array) {
+        array.reduce(function (prev, curr) {
+          if (prev[curr.type] == undefined)
+            prev[curr.type] = [];
+          prev[curr.type].push(curr);
+        }, []);
+      },
+      
+      priceChanged: function () {
+        this.search();
+      },
+      
+      filter: function () {
+        
+      }
     });
   </script>
 </polymer-element>
