@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/core-input/core-input.html">
 <link rel="import" href="../bower_components/core-label/core-label.html">
 
-<polymer-element name="shiren5-price-input" attributes="value">
+<polymer-element name="shiren5-price-input" attributes="price">
   <template>
     <style>
       #price {
@@ -15,12 +15,16 @@
     </style>
 
     <core-label horizontal layout>
-      <input flex id="price" is="core-input" placeholder="9999" value="{{ value }}">
+      <input flex id="price" type="number" is="core-input" placeholder="9999" value="{{ price }}">
       <span>G</span>
     </core-label>
   </template>
   
   <script>
-    Polymer({});
+    Polymer({
+      priceChanged: function () {
+        this.fire("price-change");
+      }
+    });
   </script>
 </polymer-element>

@@ -2,37 +2,28 @@
 <link rel="import" href="../bower_components/core-field/core-field.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
-<polymer-element name="shiren5-states-form" attributes="value">
+<polymer-element name="shiren5-states-form" attributes="blessed cursed">
   <template>
     <core-field horizontal around-justified layout>
       <template repeat="{{ type in data }}">
-        <paper-checkbox data-index="{{ type.index }}"
-                        label="{{ type.label }}"
-                        on-change="{{ check }}"></paper-checkbox>
+        <paper-checkbox label="{{ type.label }}" name="{{ type.name }}"
+                        on-core-change="{{ check }}"></paper-checkbox>
       </template>
     </core-field>
   </template>
   
   <script>
     Polymer({
-        value: [],
-        data: [
-            { index: 0, label: "祝" },
-            { index: 1, label: "呪" }
-        ],
-
-        check: function (event, detail, sender) {
-            var index = Number(sender.getAttribute("data-index"));
-            if (sender.checked) {
-                if (this.value.indexOf(index) == -1)
-                    this.value.push(index);
-            } else {
-                var idx = this.value.indexOf(index);
-                if (idx != -1)
-                    this.value.splice(idx, 1);
-            }
-
-        }
+      data: [
+        { name: "blessed", label: "祝" },
+        { name: "cursed", label: "呪" }
+      ],
+      
+      check: function (event, detail, sender) {
+        var name = sender.getAttribute("name");
+        this[name] = sender.checked;
+        this.fire("states-change", detail);
+      }
     });
   </script>
 </polymer-element>

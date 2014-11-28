@@ -23,11 +23,16 @@
     
      <div id="content" fit vertical layout>
        <div horizontal layout>
-         <shiren5-price-input flex one value="{{ price }}"></shiren5-price-input>
-         <shiren5-types-form flex two value="{{ types }}"></shiren5-types-form>
-         <shiren5-states-form flex two value="{{ states }}"></shiren5-states-form>
+         <shiren5-price-input flex one self-center price="{{ price }}"
+                              on-price-change="{{ refresh }}"></shiren5-price-input>
+         
+         <shiren5-types-form flex two type="{{ type }}"
+                             on-type-change="{{ refresh }}"></shiren5-types-form>
+         <shiren5-states-form flex two
+                              on-states-change="{{ refresh }}"
+                              blessed="{{ blessed }}"
+                              cursed="{{ cursed }}"></shiren5-states-form>
        </div>
-       
        <shiren5-item-list flex data="{{ list }}"></shiren5-item-list>
      </div>
   </template>
@@ -38,12 +43,16 @@
       list: [],
       blessed: false,
       cursed: false,
+      
+      refresh: function () {
+        this.search();
+      },
 
       search: function () {
-        var blessed = true;
-        var cursed = true;
-        
         this.list = this.data.reduce(function (prev, curr) {
+          if (curr.type != this.type)
+            return prev;
+
           var list = this.itemCheck(this.price, curr, "purchase",
                                this.blessed, this.cursed);
 
@@ -104,22 +113,6 @@
       
       copy: function (obj) {
         return JSON.parse(JSON.stringify(obj));
-      },
-
-      group: function (array) {
-        array.reduce(function (prev, curr) {
-          if (prev[curr.type] == undefined)
-            prev[curr.type] = [];
-          prev[curr.type].push(curr);
-        }, []);
-      },
-      
-      priceChanged: function () {
-        this.search();
-      },
-      
-      filter: function () {
-        
       }
     });
   </script>
