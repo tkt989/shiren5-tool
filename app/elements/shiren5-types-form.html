@@ -6,8 +6,30 @@
 
 <polymer-element name="shiren5-types-form" attributes="type">
   <template>
-    <core-field around-justified>
-      <paper-radio-group selected="{{ type }}">
+    <style>
+      paper-radio-button[name="grass"]::shadow #onRadio {
+        background-color: #2ecc71;
+      }
+
+      paper-radio-button[name="staff"]::shadow #onRadio {
+        background-color: #d35400;
+      }
+
+      paper-radio-button[name="scroll"]::shadow #onRadio {
+        background-color: #7f8c8d;
+      }
+      
+      paper-radio-button[name="pot"]::shadow #onRadio {
+        background-color: #f1c40f;
+      }
+
+      paper-radio-button[name="bangle"]::shadow #onRadio {
+        background-color: #3498db;
+      }
+    </style>
+    
+    <core-field>
+      <paper-radio-group flex horizontal wrap around-justified layout selected="{{ type }}">
         <template repeat="{{ type in data }}">
           <paper-radio-button name="{{ type.name }}"
                               label="{{ type.label }}"

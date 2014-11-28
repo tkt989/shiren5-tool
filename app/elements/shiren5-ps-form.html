@@ -1,0 +1,40 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-field/core-field.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+
+<polymer-element name="shiren5-ps-form" attributes="value">
+  <template>
+    <style>
+      paper-radio-button::shadow #onRadio {
+        background-color: #888888;
+      }
+    </style>
+    
+    <core-field>
+      <paper-radio-group flex horizontal around-justified layout selected="{{ value }}">
+        <template repeat="{{ pos in data }}">
+          <paper-radio-button label="{{ pos.label }}" name="{{ pos.name }}"
+                              on-core-change="{{ check }}"></paper-checkbox>
+        </template>
+      </paper-radio-group>
+    </core-field>
+  </template>
+  
+  <script>
+    Polymer({
+      value: "purchase",
+      
+      data: [
+        { name: "purchase", label: "買う" },
+        { name: "selling", label: "売る" }
+      ],
+      
+      check: function (event, detail, sender) {
+        var name = sender.getAttribute("name");
+        this[name] = sender.checked;
+        this.fire("value-change", detail);
+      }
+    });
+  </script>
+</polymer-element>

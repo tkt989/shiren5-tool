@@ -1,16 +1,37 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/core-media-query/core-media-query.html">
 <link rel="import" href="shiren5-price-input.html">
 <link rel="import" href="shiren5-types-form.html">
+<link rel="import" href="shiren5-ps-form.html">
 <link rel="import" href="shiren5-states-form.html">
 <link rel="import" href="shiren5-item-list.html">
 
-<polymer-element name="shiren5-tool">
+<polymer-element name="shiren5-tool" attributes="mobile">
    <template>
      <style>
        :host {
            display: block;
            height: 100%;
+       }
+
+       :host([mobile]) #form-content {
+         flex-flow: column;
+       }
+
+       :host([mobile]) #form-content shiren5-price-input, shiren5-states-form {
+         width: 100%;
+       }
+
+       shiren5-price-input {
+         width: 150px;
+         font-size: 150%;
+         border-bottom: 1px solid #aaaaaa;
+       }
+
+       shiren5-types-form, shiren5-ps-form, shiren5-states-form {
+         border-radius: 5px;
+         margin: 10px;
        }
      </style>
          
@@ -20,25 +41,37 @@
       url="../items.json"
       handleAs="json"
       on-core-response="{{ response }}"></core-ajax>
+
+    <core-media-query query="max-width: 600px"
+                      queryMatches="{{ mobile }}"></core-media-query>
     
      <div id="content" fit vertical layout>
-       <div horizontal layout>
-         <shiren5-price-input flex one self-center price="{{ price }}"
+       <div id="form-content" horizontal center wrap around-justified layout>
+         <shiren5-price-input  price="{{ price }}"
                               on-price-change="{{ refresh }}"></shiren5-price-input>
-         
-         <shiren5-types-form flex two type="{{ type }}"
-                             on-type-change="{{ refresh }}"></shiren5-types-form>
-         <shiren5-states-form flex two
+         <shiren5-ps-form value="{{ prop }}"
+                          on-value-change="{{ refresh }}"></shiren5-ps-form>
+         <shiren5-states-form
                               on-states-change="{{ refresh }}"
                               blessed="{{ blessed }}"
                               cursed="{{ cursed }}"></shiren5-states-form>
        </div>
+       
+       <div horizontal layout>
+         <shiren5-types-form flex three type="{{ type }}"
+                             on-type-change="{{ refresh }}"></shiren5-types-form>
+       </div>
+       
        <shiren5-item-list flex data="{{ list }}"></shiren5-item-list>
      </div>
   </template>
 
   <script>
     Polymer({
+      publish: {
+        mobile: { value: false, reflect: true }
+      },
+
       data: [],
       list: [],
       blessed: false,
@@ -53,15 +86,13 @@
           if (curr.type != this.type)
             return prev;
 
-          var list = this.itemCheck(this.price, curr, "purchase",
+          var list = this.itemCheck(this.price, curr, this.prop,
                                this.blessed, this.cursed);
 
           if (list.length > 0)
             Array.prototype.push.apply(prev, list);
           return prev;
         }.bind(this), []);
-
-        console.log(this.list);
       },
 
       itemCheck: function (price, item, prop, blessed, cursed) {

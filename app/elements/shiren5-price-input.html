@@ -12,10 +12,18 @@
       core-label {
           width: 100%;
       }
+
+      #price {
+        text-align: right;
+      }
+
+      :host {
+        width: 100%;
+      }
     </style>
 
     <core-label horizontal layout>
-      <input flex id="price" type="number" is="core-input" placeholder="9999" value="{{ price }}">
+      <input flex id="price" type="number" is="core-input" maxlength="5" placeholder="9999" value="{{ price }}">
       <span>G</span>
     </core-label>
   </template>

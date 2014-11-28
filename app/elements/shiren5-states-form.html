@@ -4,7 +4,22 @@
 
 <polymer-element name="shiren5-states-form" attributes="blessed cursed">
   <template>
-    <core-field horizontal around-justified layout>
+    <style>
+      paper-checkbox {
+        padding: 12px;
+      }
+      
+      paper-checkbox[name="blessed"]::shadow #checkbox.checked {
+        border-color: #f1c40f;
+      }
+
+      paper-checkbox[name="cursed"]::shadow #checkbox.checked {
+        border-color: #2c3e50;
+      }
+
+    </style>
+    
+    <core-field horizontal center around-justified layout>
       <template repeat="{{ type in data }}">
         <paper-checkbox label="{{ type.label }}" name="{{ type.name }}"
                         on-core-change="{{ check }}"></paper-checkbox>
