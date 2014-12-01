@@ -1,0 +1,136 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-localstorage/core-localstorage.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-icon/core-icon.html">
+
+<polymer-element name="shiren5-item-table" attributes="data">
+  <template>
+    <style>
+      table {
+          width: 100%;
+          text-align: center;
+          font-size: 80%;
+          border-collapse: collapse;
+          border-spacing: 0;
+      }
+
+      th, td {
+          padding: 8px;
+      }
+
+      td:nth-child(2) {
+          text-align: left;
+      }
+
+      tr:nth-child(1) {
+          background-color: #f9f9f9;
+          border-top: 1px solid #ddd;
+          border-bottom: 1px solid #ddd;
+          cursor: default;
+      }
+
+      tr {
+          opacity: 1;
+          cursor: pointer;
+          border-top: 1px solid #ddd;
+          border-bottom: 1px solid #ddd;
+      }
+
+      tr:hover {
+          opacity: 0.7;
+          background-color: #f9f9f9;
+      }
+
+      tr[data-type="grass"] {
+          background-color: rgba(46, 204, 113, 0.16);
+      }
+
+      tr[data-type="staff"] {
+          background-color: rgba(231, 76, 60, 0.16);
+      }
+
+      tr[data-type="scroll"] {
+          background-color: rgba(127, 140, 141, 0.16);
+      }
+
+      tr[data-type="pot"] {
+          background-color: rgba(241, 196, 15, 0.16);
+      }
+
+      tr[data-type="bangle"] {
+          background-color: rgba(52, 152, 219, 0.16);
+      }
+
+      th:nth-child(1) {
+          width: 10%;
+      }
+
+      th:nth-child(2) {
+          width: 60%;
+      }
+
+      th:nth-child(3), th:nth-child(4) {
+          width: 15%;
+      }
+    </style>
+
+    <core-localstorage name="checks" value="{{ checks }}"></core-localstorage>
+    
+    <div id="container">
+      <table>
+        <tbody><tr>
+          <th><core-icon icon="check"></core-icon></th>
+          <th>名前</th>
+          <th>買値</th>
+          <th>売値</th>
+        </tr>
+        <tr template repeat="{{ item in data }}" data-id="{{ item.id }}"
+            on-click="{{ check }}" data-type="{{ item.type }}">
+          <td>
+            <input type="checkbox" id="chk{{ item.id }}"
+                   data-id="{{ item.id }}" on-click="{{ checkItem }}" checked="{{ checks[item.id] }}">
+          </td>
+          
+          <td>
+            <template if="{{ item.state == 'blessed' }}">
+              <span class="blessed">(祝)</span>
+            </template>
+            <template if="{{ item.state == 'cursed' }}">
+              <span class="blessed">(呪)</span>
+            </template>
+            <span>{{ item.name }}</span>
+            <template if="{{ item.capable }}">
+              <span class="capacity">[{{ item.capacity }}]</span>
+            </template>
+          </td>
+          
+          <td>{{ item.purchase }}</td>
+          <td>{{ item.selling }}</td>
+        </tr>
+        </tbody></table>
+    </div>
+  </template>
+
+  <script>
+    Polymer('shiren5-item-table',{
+      checks: [],
+      data: [],
+
+      check: function (event, detail, sender) {
+        var id = Number(sender.getAttribute("data-id"));
+        var checkbox = sender.querySelector("input[type='checkbox']");
+        this.checks[id] = !checkbox.checked;
+      },
+
+      checkItem: function (event, detail, sender) {
+        var id = Number(sender.getAttribute("data-id"));
+        var checkbox = sender;
+        this.checks[id] = !checkbox.checked;
+      },
+
+      prevent: function (event) {
+        event.stopPropagation();
+      }
+    });
+  </script>
+</polymer-element>

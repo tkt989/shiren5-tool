@@ -17,6 +17,10 @@ gulp.task 'connect', ->
         connect().use '/bower_components', connect.static './bower_components'
       ]
 
+gulp.task 'connect:dist', ->
+  $.connect.server
+    root: "./#{config.dist}"
+
 gulp.task 'watch', ->
   gulp.watch './**/*.*'
     .on 'change', (file) ->
@@ -34,4 +38,20 @@ gulp.task 'wiredep', ->
       ignorePath: '../'
     .pipe gulp.dest "./#{config.app}"
 
-gulp.task 'serve', ['connect', 'watch']  
+gulp.task 'serve', ['connect', 'watch']
+
+gulp.task 'copy:dist', ->
+  gulp.src ['{,*/}*.html', '{,*/}*.js'], cwd: "#{config.app}"
+    .pipe gulp.dest '.tmp/'
+
+  gulp.src ['./bower_components/**/*.*'], base: './'
+    .pipe gulp.dest '.tmp/'
+
+gulp.task 'vulcanize', ['copy:dist'], ->
+  gulp.src ".tmp/index.html"
+    .pipe $.vulcanize
+      dest: "#{config.dist}"
+      strip: true
+      inline: true
+      csp: true
+    .pipe gulp.dest "#{config.dist}"

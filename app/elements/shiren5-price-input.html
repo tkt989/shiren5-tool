@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-input/core-input.html">
 <link rel="import" href="../bower_components/core-label/core-label.html">
+<link rel="import" href="../bower_components/core-input/core-input.html">
 
 <polymer-element name="shiren5-price-input" attributes="price">
   <template>
@@ -9,29 +9,22 @@
           text-align: right;
       }
 
-      core-label {
-          width: 100%;
-      }
-
-      #price {
-        text-align: right;
-      }
-
-      :host {
-        width: 100%;
+      span {
+          margin-left: 5px;
+          font-weight: bold;
       }
     </style>
 
     <core-label horizontal layout>
-      <input flex id="price" type="number" is="core-input" maxlength="5" placeholder="9999" value="{{ price }}">
+      <input flex id="price" type="number" is="core-input" maxlength="5" placeholder="値段" value="{{ price }}">
       <span>G</span>
     </core-label>
   </template>
-  
+
   <script>
-    Polymer({
+    Polymer('shiren5-price-input',{
       priceChanged: function () {
-        this.fire("price-change");
+        this.asyncFire("price-change");
       }
     });
   </script>

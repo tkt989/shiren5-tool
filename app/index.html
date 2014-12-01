@@ -1,32 +1,13 @@
 <!doctype html>
-
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=0.5,minimum-scale=0.5, maximum-scale=0.5, user-scalable=yes">
+    <title>シレン5 値段識別ツール</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
-    <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
-    <link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
-    <link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
-    <link rel="import" href="../bower_components/core-input/core-input.html">
-    <link rel="import" href="elements/shiren5-tool.html">
+    <link rel="import" href="elements/shiren5-app.html">
   </head>
-  <body fullbleed vertical layout unresolved>
-    <style>
-      #content {
-          max-width: 700px;
-          margin: 0 auto;
-          padding: 10px;
-      }
-    </style>
 
-    <core-header-panel flex>
-      <core-toolbar>
-        <span>シレン5値段識別ツール</span>
-      </core-toolbar>
-
-      <div id="content" fit>
-        <shiren5-tool></shiren5-tool>
-      </div>
-    </core-header-panel>
+  <body fullbleed>
+    <shiren5-app></shiren5-app>
   </body>
 </html>

@@ -1,0 +1,76 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+<link rel="import" href="../bower_components/core-localstorage/core-localstorage.html">
+<link rel="import" href="../bower_components/core-icons/core-icons.html">
+<link rel="import" href="../bower_components/core-header-panel/core-header-panel.html">
+<link rel="import" href="../bower_components/core-toolbar/core-toolbar.html">
+<link rel="import" href="../bower_components/core-icon-button/core-icon-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shiren5-tool.html">
+
+<polymer-element name="shiren5-app">
+  <template>
+    <style>
+      #content {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 10px;
+          -webkit-transform: translateZ(0px);
+      }
+      
+      *:not(input){
+          -webkit-user-select: none;
+      }
+      
+      * {
+          font-family: "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+          -webkit-touch-callout: none;
+      }
+
+      core-header-panel {
+          height: 100%;
+      }
+
+      core-toolbar {
+          color: #fff;
+          background-color: #3498db;
+      }
+    </style>
+
+    <core-localstorage name="checks"
+                       value="{{ checks }}"></core-localstorage>
+
+    <core-header-panel mode="scroll">
+      <core-toolbar>
+        <span flex>シレン5 値段識別ツール</span>
+        <core-icon-button icon="delete" on-click="{{ toggleDialog }}"></core-icon-button>
+      </core-toolbar>
+
+      <div id="content">
+        <shiren5-tool></shiren5-tool>
+      </div>
+    </core-header-panel>
+
+    <paper-action-dialog id="dialog" backdrop autoCloseDisabled>
+      <p>すべてのアイテムのチェックを外します。よろしいですか?</p>
+      <paper-button dismissive>Cancel</paper-button>
+      <paper-button affirmative on-click="{{ deleteChecks }}"
+                    style="color: #3498db;">OK</paper-button>
+    </paper-action-dialog>
+  </template>
+
+  <script>
+    Polymer({
+      toggleDialog: function () {
+        this.$.dialog.toggle();
+      },
+      
+      deleteChecks: function () {
+        this.checks = [];
+        location.reload();
+      }
+    });
+  </script>
+</polymer-element>

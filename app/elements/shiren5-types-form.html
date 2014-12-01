@@ -1,12 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/core-field/core-field.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <polymer-element name="shiren5-types-form" attributes="type">
   <template>
     <style>
+      paper-radio-button::shadow #offRadio {
+        border-color: #448844;
+      }
+      
+      paper-radio-button[name="all"]::shadow #onRadio {
+        background-color: #aaaaaa;
+      }
+      
       paper-radio-button[name="grass"]::shadow #onRadio {
         background-color: #2ecc71;
       }
@@ -31,19 +38,20 @@
     <core-field>
       <paper-radio-group flex horizontal wrap around-justified layout selected="{{ type }}">
         <template repeat="{{ type in data }}">
-          <paper-radio-button name="{{ type.name }}"
-                              label="{{ type.label }}"
+          <paper-radio-button name="{{ type.name }}" label="{{ type.label }}"
                               on-core-change="{{ check }}"></paper-radio-button>
         </template>
       </paper-radio-group>
     </core-field>
   </template>
-  
+
   <script>
-    Polymer({
+    
+    Polymer('shiren5-types-form',{
       type: "grass",
       
       data: [
+        { name: "all", label: "全て" },
         { name: "grass", label: "草・種" },
         { name: "staff", label: "杖" },
         { name: "scroll", label: "巻物" },
@@ -52,8 +60,10 @@
       ],
       
       check: function (event, detail, sender) {
-        this.fire("type-change");
+        this.asyncFire("type-change");
       }
     });
+  ;
   </script>
+  
 </polymer-element>

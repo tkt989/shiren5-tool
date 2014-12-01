@@ -6,29 +6,33 @@
   <template>
     <style>
       paper-checkbox {
-        padding: 12px;
+          padding: 12px;
+          box-sizing: border-box;
+      }
+
+      paper-checkbox::shadow #checkbox {
+          border-color: #884444;
       }
       
       paper-checkbox[name="blessed"]::shadow #checkbox.checked {
-        border-color: #f1c40f;
+          border-color: #f1c40f;
       }
 
       paper-checkbox[name="cursed"]::shadow #checkbox.checked {
-        border-color: #2c3e50;
+          border-color: #2c3e50;
       }
 
     </style>
     
-    <core-field horizontal center around-justified layout>
+    <core-field>
       <template repeat="{{ type in data }}">
-        <paper-checkbox label="{{ type.label }}" name="{{ type.name }}"
-                        on-core-change="{{ check }}"></paper-checkbox>
+        <paper-checkbox label="{{ type.label }}" name="{{ type.name }}" on-core-change="{{ check }}"></paper-checkbox>
       </template>
     </core-field>
   </template>
   
   <script>
-    Polymer({
+    Polymer('shiren5-states-form',{
       data: [
         { name: "blessed", label: "祝" },
         { name: "cursed", label: "呪" }
@@ -37,7 +41,7 @@
       check: function (event, detail, sender) {
         var name = sender.getAttribute("name");
         this[name] = sender.checked;
-        this.fire("states-change", detail);
+        this.asyncFire("states-change", detail);
       }
     });
   </script>

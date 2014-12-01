@@ -1,136 +1,110 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-list/core-list.html">
 <link rel="import" href="../bower_components/core-media-query/core-media-query.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shiren5-item-table.html">
 
-<polymer-element name="shiren5-item-list" attributes="data price per-page">
+<polymer-element name="shiren5-item-list" attributes="data price per-page mobile">
   <template>
     <style>
-      :host {
-          display: block;
-          height: 100%;
+      #list {
+          margin-bottom: 20px;
       }
 
-      #container {
-          height: 100%;
+      shiren5-item-table {
+          width: 50%;
       }
 
-      ul.list {
-          margin: 0;
-          padding: 0;
-      }
-
-      ul.list > li {
-          list-style: none;
-          font-size: 150%;
-          cursor: pointer;
+      :host([mobile]) shiren5-item-table {
+          width: 100%;
       }
     </style>
-    
-    <core-media-query query="min-width: 640px"
-                      queryMatches="{{ twoColumn }}"></core-media-query>
 
-    <div id="container" vertical layout>
-      <div self-center horizontal layout>
-        <template if="{{ !twoColumn }}">
-          <ul class="list">
-            <template repeat="{{ item in list }}">
-              <li>
-                {{ item.name }}
-              </li>
-            </template>
-          </ul>
+    <core-media-query query="max-width: 600px" querymatches="{{ mobile }}"></core-media-query>
+
+    <div vertical layout>
+      <div id="list" horizontal layout>
+        <template if="{{ !mobile }}" repeat="{{ itemList in list }}">
+          <shiren5-item-table data="{{ itemList }}"></shiren5-item-table>
         </template>
 
-        <template if="{{ twoColumn }}">
-          <ul class="list">
-            <template repeat="{{ item in list1 }}">
-              <li>
-                {{ item.name }}
-              </li>
-            </template>
-          </ul>
-          
-          <ul class="list">
-            <template repeat="{{ item in list2 }}">
-              <li>
-                {{ item.name }}
-              </li>
-            </template>
-          </ul>
+        <template if="{{ mobile }}">
+          <shiren5-item-table data="{{ list }}"></shiren5-item-table>
         </template>
       </div>
-
-      <div self-center>
-        <paper-button on-click="{{ prev }}" disabled="{{ page == 0 }}">&lt;&lt;</paper-button>
-        {{ page + 1}}
-        /
-        {{ maxPage }}
-        <paper-button on-click="{{ next }}" disabled="{{ page == maxPage - 1 }}">&gt;&gt;</paper-button>
-      </div>
+      
+      <template if="{{ data.length > 0}}">
+        <div self-center>
+          <paper-button raised on-click="{{ prev }}" disabled="{{ page == 0 }}">&lt;&lt;</paper-button>
+          {{ page + 1}}
+          /
+          {{ maxPage }}
+          <paper-button raised on-click="{{ next }}" disabled="{{ page == maxPage - 1 }}">&gt;&gt;</paper-button>
+        </div>
+      </template>
     </div>
-
   </template>
-  
+
   <script>
-    Polymer({
-        page: 0,
-        perPage: 10,
-        maxPage: null,
-        data: [],
-        list: [],
-        twoColumn: false,
+    Polymer('shiren5-item-list',{
+      publish: {
+        mobile: { value: false, reflect: true }
+      },
+      
+      page: 0,
+      perPage: 10,
+      maxPage: null,
+      data: [],
+      list: [],
 
-        pageChanged: function () {
-            this.pagination();
-        },
+      pageChanged: function () {
+        this.pagination();
+      },
 
-        twoColumnChanged: function (oldVal, newVal) {
-            this.initPagination();
-            this.pagination();
-        },
+      mobileChanged: function (oldVal, newVal) {
+        this.initPagination();
+        this.pagination();
+      },
 
-        dataChanged: function () {
-            this.initPagination();
-            this.pagination();
-        },
+      dataChanged: function () {
+        this.initPagination();
+        this.pagination();
+      },
 
-        next: function () {
-            this.page += 1;
-        },
+      next: function () {
+        this.page += 1;
+      },
 
-        prev: function () {
-            this.page -= 1;
-        },
-        ready: function () {
-            this.initPagination();
-            this.pagination();
-        },
+      prev: function () {
+        this.page -= 1;
+      },
+      ready: function () {
+        this.initPagination();
+        this.pagination();
+      },
 
-        initPagination: function () {
-            this.page = 0;
-            if (this.twoColumn) {
-                this.maxPage = Math.ceil(this.data.length / (this.perPage * 2));
-            } else {
-                this.maxPage = Math.ceil(this.data.length / this.perPage);
-            }
-        },
-
-        pagination: function () {
-            var page = this.page;
-            var perPage = this.perPage;
-
-            if (this.twoColumn) {
-                this.list = [];
-                var tmp = this.data.slice(page * perPage * 2, page * perPage * 2 + perPage * 2);
-                this.list1 = tmp.slice(0, perPage);
-                this.list2 = tmp.slice(perPage);
-            } else {
-                this.list1 = [];
-                this.list2 = [];
-                this.list = this.data.slice(page * perPage, page * perPage + perPage);
-            }
+      initPagination: function () {
+        this.page = 0;
+        if (!this.mobile) {
+          this.maxPage = Math.ceil(this.data.length / (this.perPage * 2));
+        } else {
+          this.maxPage = Math.ceil(this.data.length / this.perPage);
         }
+      },
+
+      pagination: function () {
+        var page = this.page;
+        var perPage = this.perPage;
+
+        if (!this.mobile) {
+          this.list = [];
+          var tmp = this.data.slice(page * perPage * 2, page * perPage * 2 + perPage * 2);
+          this.list.push(tmp.slice(0, perPage));
+          this.list.push(tmp.slice(perPage));
+        } else {
+          this.list = this.data.slice(page * perPage, page * perPage + perPage);
+        }
+      }
     });
   </script>
+  
 </polymer-element>

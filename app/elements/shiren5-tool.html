@@ -1,73 +1,46 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-media-query/core-media-query.html">
 <link rel="import" href="shiren5-price-input.html">
-<link rel="import" href="shiren5-types-form.html">
 <link rel="import" href="shiren5-ps-form.html">
 <link rel="import" href="shiren5-states-form.html">
+<link rel="import" href="shiren5-types-form.html">
 <link rel="import" href="shiren5-item-list.html">
 
-<polymer-element name="shiren5-tool" attributes="mobile">
-   <template>
-     <style>
-       :host {
-           display: block;
-           height: 100%;
-       }
+<polymer-element name="shiren5-tool" attributes="mobile checks" assetpath>
+  <template>
+    <style>
+      :host([mobile]) #form-content shiren5-price-input {
+          width: 100%;
+      }
 
-       :host([mobile]) #form-content {
-         flex-flow: column;
-       }
+      shiren5-price-input {
+          width: 150px;
+          font-size: 120%;
+          border-bottom: 1px solid #aaaaaa;
+      }
 
-       :host([mobile]) #form-content shiren5-price-input, shiren5-states-form {
-         width: 100%;
-       }
-
-       shiren5-price-input {
-         width: 150px;
-         font-size: 150%;
-         border-bottom: 1px solid #aaaaaa;
-       }
-
-       shiren5-types-form, shiren5-ps-form, shiren5-states-form {
-         border-radius: 5px;
-         margin: 10px;
-       }
-     </style>
-         
-    <core-ajax
-      id="ajax"
-      auto
-      url="../items.json"
-      handleAs="json"
-      on-core-response="{{ response }}"></core-ajax>
-
-    <core-media-query query="max-width: 600px"
-                      queryMatches="{{ mobile }}"></core-media-query>
+    </style>
     
-     <div id="content" fit vertical layout>
-       <div id="form-content" horizontal center wrap around-justified layout>
-         <shiren5-price-input  price="{{ price }}"
-                              on-price-change="{{ refresh }}"></shiren5-price-input>
-         <shiren5-ps-form value="{{ prop }}"
-                          on-value-change="{{ refresh }}"></shiren5-ps-form>
-         <shiren5-states-form
-                              on-states-change="{{ refresh }}"
-                              blessed="{{ blessed }}"
-                              cursed="{{ cursed }}"></shiren5-states-form>
-       </div>
-       
-       <div horizontal layout>
-         <shiren5-types-form flex three type="{{ type }}"
-                             on-type-change="{{ refresh }}"></shiren5-types-form>
-       </div>
-       
-       <shiren5-item-list flex data="{{ list }}"></shiren5-item-list>
-     </div>
+    <core-media-query query="max-width: 600px" querymatches="{{ mobile }}"></core-media-query>
+    
+    <div id="form-content" horizontal center wrap around-justified layout>
+      <shiren5-price-input price="{{ price }}" on-price-change="{{ refresh }}"></shiren5-price-input>
+
+      <shiren5-ps-form value="{{ prop }}" on-value-change="{{ refresh }}"></shiren5-ps-form>
+      
+      <shiren5-states-form on-states-change="{{ refresh }}"
+                           blessed="{{ blessed }}" cursed="{{ cursed }}"></shiren5-states-form>
+    </div>
+    
+    <shiren5-types-form three="" type="{{ type }}" on-type-change="{{ refresh }}"></shiren5-types-form>
+    
+
+    <shiren5-item-list data="{{ list }}"></shiren5-item-list>
   </template>
 
+  <script src="items.json.js"></script>
   <script>
-    Polymer({
+    Polymer('shiren5-tool',{
       publish: {
         mobile: { value: false, reflect: true }
       },
@@ -76,6 +49,10 @@
       list: [],
       blessed: false,
       cursed: false,
+
+      ready: function () {
+        this.data = jsonData;
+      },
       
       refresh: function () {
         this.search();
@@ -83,11 +60,11 @@
 
       search: function () {
         this.list = this.data.reduce(function (prev, curr) {
-          if (curr.type != this.type)
+          if (this.type != "all" && curr.type != this.type)
             return prev;
 
           var list = this.itemCheck(this.price, curr, this.prop,
-                               this.blessed, this.cursed);
+                                    this.blessed, this.cursed);
 
           if (list.length > 0)
             Array.prototype.push.apply(prev, list);
@@ -99,8 +76,10 @@
         var result = [];
 
         if (item.capable) {
-          for (var i = 0; i < item.max; ++i) {
-            var list = this.check(price, item, prop, blessed, cursed, i);
+          for (var i = 0; i <= item.max; ++i) {
+            var tmp = this.copy(item);
+            tmp.capacity = i;
+            var list = this.check(price, tmp, prop, blessed, cursed, i);
             Array.prototype.push.apply(result, list);
           }
         } else {
@@ -110,15 +89,14 @@
         return result;
       },
 
-      check: function (price, item, prop,
-                       blessed, cursed, capacity) {
+      check: function (price, item, prop, blessed, cursed, capacity) {
         if (typeof capacity === 'undefined') capacity = null;
         var result = [];
         var getPrice = function (value, modulo) {
           if (capacity == null)
-            return Number(value * modulo);
+            return Math.floor(value * modulo);
           else
-            return Number(value * (1 + 0.05 * capacity));
+            return Math.floor(value * (1 + 0.05 * capacity) * modulo);
         };
 
         if (price == getPrice(item[prop], 1)) {
@@ -136,10 +114,6 @@
         }
 
         return result;
-      },
-      
-      response: function (event, detail, sender) {
-        this.data = detail.response;
       },
       
       copy: function (obj) {

@@ -1,28 +1,31 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/core-field/core-field.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <polymer-element name="shiren5-ps-form" attributes="value">
   <template>
     <style>
+      paper-radio-button::shadow #offRadio {
+          border-color: #444488;
+      }
+
       paper-radio-button::shadow #onRadio {
-        background-color: #888888;
+          background-color: #888888;
       }
     </style>
     
     <core-field>
-      <paper-radio-group flex horizontal around-justified layout selected="{{ value }}">
+      <paper-radio-group selected="{{ value }}">
         <template repeat="{{ pos in data }}">
-          <paper-radio-button label="{{ pos.label }}" name="{{ pos.name }}"
-                              on-core-change="{{ check }}"></paper-checkbox>
-        </template>
+          <paper-radio-button label="{{ pos.label }}" name="{{ pos.name }}" on-core-change="{{ check }}">
+          </paper-radio-button></template>
       </paper-radio-group>
     </core-field>
   </template>
-  
+
   <script>
-    Polymer({
+    Polymer('shiren5-ps-form',{
       value: "purchase",
       
       data: [
@@ -33,7 +36,7 @@
       check: function (event, detail, sender) {
         var name = sender.getAttribute("name");
         this[name] = sender.checked;
-        this.fire("value-change", detail);
+        this.asyncFire("value-change", detail);
       }
     });
   </script>
